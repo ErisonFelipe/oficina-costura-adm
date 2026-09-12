@@ -1,0 +1,98 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+
+}
+
+// ===== ORÇAMENTOS / CONTATOS =====
+model Quote {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  service   String?
+  message   String
+  status    QuoteStatus @default(PENDING)
+  notes     String?  // anotações internas
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+enum QuoteStatus {
+  PENDING     // Aguardando resposta
+  IN_PROGRESS // Em andamento
+  COMPLETED   // Concluído
+  CANCELLED   // Cancelado
+}
+
+// ===== GALERIA =====
+model GalleryImage {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  category    String   // "vestido", "terno", "bainha"...
+  filename    String   // nome do arquivo salvo
+  originalName String  // nome original enviado
+  mimeType    String
+  size        Int      // em bytes
+  width       Int?
+  height      Int?
+  featured    Boolean  @default(false)
+  order       Int      @default(0)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([category])
+  @@index([featured])
+  @@index([active])
+}
+
+// ===== SERVIÇOS (dinâmico, opcional) =====
+model Service {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  description String
+  icon        String   // nome do ícone
+  tag         String?
+  order       Int      @default(0)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ===== CONFIGURAÇÕES DO SITE =====
+model SiteConfig {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
+// ===== USUÁRIOS ADMINISTRATIVOS =====
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String   // hash bcrypt
+  role      UserRole @default(ADMIN)
+  active    Boolean  @default(true)
+  lastLogin DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+}
+
+enum UserRole {
+  ADMIN     // Acesso total
+  MANAGER   // Pode gerenciar orçamentos e galeria
+  VIEWER    // Só visualiza
+}
