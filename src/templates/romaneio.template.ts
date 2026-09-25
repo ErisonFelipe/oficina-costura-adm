@@ -259,7 +259,7 @@ export function renderRomaneioHTML(romaneio: Romaneio): string {
 
   <!-- CABEÇALHO -->
   <div class="header">
-    <h1>Danka Modas</h1>
+    <h1>Lunnexx</h1>
     <div class="subtitulo">Romaneio de Corte</div>
   </div>
 
@@ -406,7 +406,7 @@ export function renderRomaneioHTML(romaneio: Romaneio): string {
 
   <!-- RODAPÉ -->
   <div class="footer">
-    Danka Modas — Romaneio gerado em ${formatDateBR(new Date())}
+    Lunnexx — Romaneio gerado em ${formatDateBR(new Date())}
   </div>
 
 </body>
