@@ -9,6 +9,7 @@ import { prisma } from './config/database';
 import { authRoutes } from './routes/auth.routes';
 import { quoteRoutes } from './routes/quote.routes';
 import { userRoutes } from './routes/user.routes';
+import { romaneioRoutes } from './routes/romaneio.routes';
 
 async function bootstrap() {
   const app = Fastify({
@@ -79,6 +80,7 @@ async function bootstrap() {
   await app.register(authRoutes, { prefix: '/api/auth' });
   await app.register(quoteRoutes, { prefix: '/api/admin/quotes' });
   await app.register(userRoutes, { prefix: '/api/admin/users' });
+  await app.register(romaneioRoutes, { prefix: '/api/admin/romaneios' });
 
   // ===== HEALTH CHECK =====
   app.get('/health', async () => ({
