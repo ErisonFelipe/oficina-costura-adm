@@ -17,12 +17,7 @@ const cobrancaSchema = z.object({
 // ===== CRIAR ROMANEIO =====
 export const createRomaneioSchema = z.object({
   cliente: z.string().min(2, 'Cliente é obrigatório').max(150),
-  data: z.string().transform((val) => {
-  // Aceita 'YYYY-MM-DD' e converte para Date ao meio-dia UTC
-  // (evita que o dia "volte" por timezone)
-  const [year, month, day] = val.split('-').map(Number);
-  return new Date(Date.UTC(year, month - 1, day, 12, 0, 0));
-}),
+  data: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Data deve estar no formato YYYY-MM-DD'),
   produto: z.string().min(2, 'Produto é obrigatório').max(150),
   referencia: z.string().max(50).optional().or(z.literal('')),
   tipoTecido: z.string().max(100).optional().or(z.literal('')),

@@ -24,6 +24,13 @@ function formatBRL(valor: number): string {
  * Formata data no padrão brasileiro (23/09/2026)
  */
 function formatDateBR(date: Date | string): string {
+  // Se for string "YYYY-MM-DD", retorna no formato BR direto (sem timezone)
+  if (typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    const [year, month, day] = date.split('-');
+    return `${day}/${month}/${year}`;
+  }
+
+  // Fallback para Date
   const d = typeof date === 'string' ? new Date(date) : date;
   const dia = String(d.getUTCDate()).padStart(2, '0');
   const mes = String(d.getUTCMonth() + 1).padStart(2, '0');

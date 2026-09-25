@@ -81,7 +81,7 @@ model Romaneio {
   id                     String   @id @default(cuid())
   numero                 String   @unique
   cliente                String
-  data                   DateTime
+  data                   String // formato:YYYY-MM-DD
   produto                String
   referencia             String?
   tipoTecido             String?
