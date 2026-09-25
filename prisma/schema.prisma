@@ -76,12 +76,38 @@ model SiteConfig {
   updatedAt DateTime @updatedAt
 }
 
+// ===== ROMANEIOS DE CORTE =====
+model Romaneio {
+  id                     String   @id @default(cuid())
+  numero                 String   @unique
+  cliente                String
+  data                   DateTime
+  produto                String
+  referencia             String?
+  tipoTecido             String?
+  quantidadeRolos        Int?
+  quantidadeFolhas       Int?
+  quantidadeEncaixados   Int?
+  quantidadePecas        Int
+  quantidadeVolumes      Int?
+  cortadorResponsavel    String?
+  conferidoPor           String?
+  grade                  Json
+  cobranca               Json
+  observacoes            String?
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  @@index([cliente])
+  @@index([createdAt])
+}
+
 // ===== USUÁRIOS ADMINISTRATIVOS =====
 model User {
   id        String   @id @default(cuid())
   name      String
   email     String   @unique
-  password  String   // hash bcrypt
+  password  String
   role      UserRole @default(ADMIN)
   active    Boolean  @default(true)
   lastLogin DateTime?
@@ -92,7 +118,7 @@ model User {
 }
 
 enum UserRole {
-  ADMIN     // Acesso total
-  MANAGER   // Pode gerenciar orçamentos e galeria
-  VIEWER    // Só visualiza
+  ADMIN
+  MANAGER
+  VIEWER
 }

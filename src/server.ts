@@ -1,4 +1,5 @@
 import Fastify from 'fastify';
+import type { FastifyError } from 'fastify';
 import cors from '@fastify/cors';
 import jwt from '@fastify/jwt';
 import swagger from '@fastify/swagger';
@@ -87,21 +88,21 @@ async function bootstrap() {
     service: 'oficina-costura-adm',
   }));
 
-  // ===== ERROR HANDLER =====
-  app.setErrorHandler((error, request, reply) => {
-    app.log.error(error);
+  // ===== ERROR HANDLER ====
+app.setErrorHandler((error: FastifyError, request, reply) => {
+  app.log.error(error);
 
-    if (error.validation) {
-      return reply.status(400).send({
-        error: 'Erro de validação',
-        details: error.validation,
-      });
-    }
-
-    reply.status(error.statusCode || 500).send({
-      error: error.message || 'Erro interno do servidor',
+  if (error.validation) {
+    return reply.status(400).send({
+      error: 'Erro de validação',
+      details: error.validation,
     });
+  }
+
+  reply.status(error.statusCode || 500).send({
+    error: error.message || 'Erro interno do servidor',
   });
+});
 
   // ===== START =====
   try {
