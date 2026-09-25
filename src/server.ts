@@ -30,17 +30,35 @@ async function bootstrap() {
   });
 
   // ===== PLUGINS =====
-  await app.register(cors, {
-    origin: [env.ADMIN_URL, 'http://localhost:5174'],
-    credentials: true,
-  });
-
+await app.register(cors, {
+  origin: [env.ADMIN_URL, 'http://localhost:5174'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+});
   await app.register(jwt, {
     secret: env.JWT_SECRET,
     sign: {
       expiresIn: env.JWT_EXPIRES_IN,
     },
   });
+
+  // Aceitar body vazio em DELETE (evita 400 em requisições sem body)
+app.addContentTypeParser(
+  'application/json',
+  { parseAs: 'string' },
+  (req, body, done) => {
+    if (!body || (typeof body === 'string' && body.trim() === '')) {
+      return done(null, {});
+    }
+    try {
+      const json = JSON.parse(body as string);
+      done(null, json);
+    } catch (err) {
+      done(err as Error, undefined);
+    }
+  }
+);
 
   // ===== SWAGGER =====
   await app.register(swagger, {
