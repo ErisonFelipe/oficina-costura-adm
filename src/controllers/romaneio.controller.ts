@@ -5,6 +5,8 @@ import {
   updateRomaneioSchema,
   listRomaneiosQuerySchema,
 } from '../schemas/romaneio.schema';
+import { renderRomaneioHTML } from '../templates/romaneio.template';
+import { htmlToPDF } from '../utils/pdfGenerator';
 
 export class RomaneioController {
   /**
@@ -146,6 +148,43 @@ export class RomaneioController {
       req.log.error(err);
       return reply.status(500).send({
         error: 'Erro ao deletar romaneio',
+      });
+    }
+  }
+    /**
+   * GET /api/admin/romaneios/:id/pdf
+   * Gera o PDF do romaneio e retorna como download.
+   */
+  async generatePDF(
+    req: FastifyRequest<{ Params: { id: string } }>,
+    reply: FastifyReply
+  ) {
+    try {
+      // Busca o romaneio
+      const romaneio = await romaneioService.findById(req.params.id);
+
+      if (!romaneio) {
+        return reply.status(404).send({ error: 'Romaneio não encontrado' });
+      }
+
+      // Gera o HTML
+      const html = renderRomaneioHTML(romaneio);
+
+      // Gera o PDF
+      const pdf = await htmlToPDF(html);
+
+      // Retorna como download
+      return reply
+        .header('Content-Type', 'application/pdf')
+        .header(
+          'Content-Disposition',
+          `inline; filename="romaneio-${romaneio.numero}.pdf"`
+        )
+        .send(pdf);
+    } catch (err) {
+      req.log.error(err);
+      return reply.status(500).send({
+        error: 'Erro ao gerar PDF do romaneio',
       });
     }
   }

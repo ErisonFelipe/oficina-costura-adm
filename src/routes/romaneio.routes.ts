@@ -16,6 +16,16 @@ export async function romaneioRoutes(app: FastifyInstance) {
     handler: romaneioController.list.bind(romaneioController),
   });
 
+    // Gerar PDF (precisa vir antes de /:id)
+  app.get('/:id/pdf', {
+    schema: {
+      tags: ['Romaneios'],
+      summary: 'Gerar PDF do romaneio',
+      security: [{ bearerAuth: [] }],
+    },
+    handler: romaneioController.generatePDF.bind(romaneioController),
+  });
+
   // Estatísticas (PRECISA vir antes de /:id)
   app.get('/stats', {
     schema: {
