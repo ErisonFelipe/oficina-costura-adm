@@ -209,17 +209,12 @@ export function renderRomaneioHTML(romaneio: Romaneio): string {
     }
 
     /* ===== ASSINATURAS ===== */
-    .assinaturas {
-      margin-top: 48px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 60px;
-    }
-
-    .assinatura {
-      text-align: center;
-    }
-
+.assinaturas {
+  margin-top: 48px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+}
     .assinatura .linha {
       border-top: 1px solid #2C2825;
       margin-bottom: 6px;
@@ -403,13 +398,7 @@ export function renderRomaneioHTML(romaneio: Romaneio): string {
       <div class="nome">Assinatura do cortador</div>
     </div>
   </div>
-
-  <!-- RODAPÉ -->
-  <div class="footer">
-    Lunnexx — Romaneio gerado em ${formatDateBR(new Date())}
-  </div>
-
-</body>
+  </body>
 </html>
   `.trim();
 }
