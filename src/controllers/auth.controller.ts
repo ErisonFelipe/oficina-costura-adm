@@ -1,6 +1,6 @@
 import type { FastifyRequest, FastifyReply } from 'fastify';
 import { authService } from '../services/auth.service';
-import { loginSchema } from '../schemas/auth.schema';
+import { loginSchema, registerSchema } from '../schemas/auth.schema';
 
 export class AuthController {
   async login(req: FastifyRequest, reply: FastifyReply) {
@@ -43,6 +43,37 @@ export class AuthController {
         },
       },
     });
+  }
+
+    /**
+   * POST /api/auth/register
+   * Auto-cadastro público — sempre cria com role VIEWER.
+   */
+  async register(req: FastifyRequest, reply: FastifyReply) {
+    const parsed = registerSchema.safeParse(req.body);
+
+    if (!parsed.success) {
+      return reply.status(400).send({
+        error: 'Dados inválidos',
+        details: parsed.error.flatten().fieldErrors,
+      });
+    }
+
+    try {
+      const user = await authService.register(parsed.data);
+
+      return reply.status(201).send({
+        message:
+          'Cadastro realizado com sucesso! Você pode fazer login agora.',
+        data: { user },
+      });
+    } catch (err) {
+      if (err instanceof Error && err.message === 'E-mail já cadastrado') {
+        return reply.status(409).send({ error: 'E-mail já cadastrado' });
+      }
+      req.log.error(err);
+      return reply.status(500).send({ error: 'Erro ao cadastrar usuário' });
+    }
   }
 
   async me(req: FastifyRequest, reply: FastifyReply) {

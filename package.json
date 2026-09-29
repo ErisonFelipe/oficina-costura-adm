@@ -11,7 +11,8 @@
     "migrate:deploy": "prisma migrate deploy",
     "generate": "prisma generate",
     "studio": "prisma studio",
-    "seed": "tsx prisma/seed.ts"
+    "seed": "tsx prisma/seed.ts",
+    "change-password": "tsx prisma/change-password.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

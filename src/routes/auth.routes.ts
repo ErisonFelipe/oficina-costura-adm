@@ -21,4 +21,15 @@ export async function authRoutes(app: FastifyInstance) {
     schema: { tags: ['Autenticação'], summary: 'Logout' },
     handler: authController.logout.bind(authController),
   });
+
+    // Público — auto-cadastro
+  app.post('/register', {
+    schema: {
+      tags: ['Autenticação'],
+      summary: 'Auto-cadastro de novo usuário',
+      description:
+        'Cria um usuário com role VIEWER. O admin pode promover depois.',
+    },
+    handler: authController.register.bind(authController),
+  });
 }

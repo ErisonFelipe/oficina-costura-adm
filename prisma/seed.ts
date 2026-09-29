@@ -11,7 +11,8 @@ const prisma = new PrismaClient({ adapter });
 
 async function main() {
   const adminEmail = 'admin@oficina.local';
-  const adminPassword = 'admin123';
+  // Senha forte vinda de variável de ambiente (com fallback só para dev)
+  const adminPassword = process.env.ADMIN_INITIAL_PASSWORD || 'admin123';
 
   const existing = await prisma.user.findUnique({
     where: { email: adminEmail },
@@ -38,6 +39,7 @@ async function main() {
   console.log('   E-mail:', admin.email);
   console.log('   Senha: ', adminPassword);
   console.log('   ⚠️  Troque esta senha depois do primeiro login!');
+  console.log('   💡 Use: npm run change-password admin@oficina.local');
 }
 
 main()

@@ -1,7 +1,6 @@
 import bcrypt from 'bcrypt';
 import { prisma } from '../config/database';
-import type { LoginInput } from '../schemas/auth.schema';
-
+import type { LoginInput, RegisterInput } from '../schemas/auth.schema';
 export class AuthService {
   async validateCredentials({ email, password }: LoginInput) {
     const user = await prisma.user.findUnique({
@@ -28,6 +27,42 @@ export class AuthService {
     return safeUser;
   }
 
+    /**
+   * Registra um novo usuário.
+   * Sempre com role VIEWER (menor privilégio) — admin pode promover depois.
+   */
+  async register(data: RegisterInput) {
+    // Verifica se o email já existe
+    const existing = await prisma.user.findUnique({
+      where: { email: data.email.toLowerCase() },
+    });
+
+    if (existing) {
+      throw new Error('E-mail já cadastrado');
+    }
+
+    const hash = await bcrypt.hash(data.password, 10);
+
+    const user = await prisma.user.create({
+      data: {
+        name: data.name,
+        email: data.email.toLowerCase(),
+        password: hash,
+        role: 'VIEWER',   // sempre VIEWER no auto-cadastro
+        active: true,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        createdAt: true,
+      },
+    });
+
+    return user;
+  }
+
   async findById(id: string) {
     return prisma.user.findUnique({
       where: { id },
@@ -46,6 +81,8 @@ export class AuthService {
   async hashPassword(password: string) {
     return bcrypt.hash(password, 10);
   }
+
+  
 }
 
 export const authService = new AuthService();
