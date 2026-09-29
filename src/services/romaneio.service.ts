@@ -64,6 +64,16 @@ export class RomaneioService {
         cobranca: data.cobranca as any,
         observacoes: data.observacoes || null,
       },
+      include: {
+        client: {
+          select: {
+            id: true,
+            name: true,
+            phone: true,
+            email: true,
+          },
+        },
+      }
     });
 
     return romaneio;
@@ -115,9 +125,21 @@ export class RomaneioService {
   /**
    * Busca um romaneio pelo ID.
    */
-  async findById(id: string) {
-    return prisma.romaneio.findUnique({ where: { id } });
-  }
+ async findById(id: string) {
+  return prisma.romaneio.findUnique({
+    where: { id },
+    include: {
+      client: {
+        select: {
+          id: true,
+          name: true,
+          phone: true,
+          email: true,
+        },
+      },
+    },
+  });
+}
 
   /**
    * Estatísticas gerais dos romaneios (para dashboard).
@@ -180,6 +202,11 @@ export class RomaneioService {
     return prisma.romaneio.update({
       where: { id },
       data: updateData,
+      include: {
+        client: {
+          select: {id: true, name: true, phone: true, email: true},
+        },
+      },
     });
   }
 
