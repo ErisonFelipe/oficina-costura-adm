@@ -48,6 +48,7 @@ export class RomaneioService {
       data: {
         numero,
         cliente: data.cliente,
+        clientId: data.clientId || null,
         data: data.data,
         produto: data.produto,
         referencia: data.referencia || null,
@@ -174,6 +175,7 @@ export class RomaneioService {
     if (data.grade !== undefined) updateData.grade = data.grade as any;
     if (data.cobranca !== undefined) updateData.cobranca = data.cobranca as any;
     if (data.observacoes !== undefined) updateData.observacoes = data.observacoes || null;
+    if (data.clientId !== undefined) updateData.clientId = data.clientId || null;
 
     return prisma.romaneio.update({
       where: { id },
