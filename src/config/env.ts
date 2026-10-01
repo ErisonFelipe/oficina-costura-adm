@@ -9,6 +9,7 @@ const envSchema = z.object({
   ADMIN_URL: z.string().url().default('http://localhost:5174'),
   JWT_SECRET: z.string().min(32, 'JWT_SECRET precisa ter pelo menos 32 caracteres'),
   JWT_EXPIRES_IN: z.string().default('7d'),
+  ENABLE_SWAGGER: z.coerce.boolean().default(false),
 });
 
 const parsed = envSchema.safeParse(process.env);

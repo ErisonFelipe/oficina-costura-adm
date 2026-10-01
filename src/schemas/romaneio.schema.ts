@@ -24,7 +24,7 @@ export const createRomaneioSchema = z.object({
   tipoTecido: z.string().max(100).optional().or(z.literal('')),
   quantidadeRolos: z.number().int().min(0).optional(),
   quantidadeFolhas: z.number().int().min(0).optional(),
-  quantidadeEncaixados: z.number().int().min(0).optional(),
+  quantidadeEncaixados: z.string().max(50).optional().or(z.literal('')),
   quantidadePecas: z.number().int().min(1, 'Quantidade de peças é obrigatória'),
   quantidadeVolumes: z.number().int().min(0).optional(),
   cortadorResponsavel: z.string().max(100).optional().or(z.literal('')),

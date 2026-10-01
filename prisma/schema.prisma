@@ -87,7 +87,7 @@ model Romaneio {
   tipoTecido             String?
   quantidadeRolos        Int?
   quantidadeFolhas       Int?
-  quantidadeEncaixados   Int?
+  quantidadeEncaixados   String?
   quantidadePecas        Int
   quantidadeVolumes      Int?
   cortadorResponsavel    String?

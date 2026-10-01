@@ -55,7 +55,7 @@ export class RomaneioService {
         tipoTecido: data.tipoTecido || null,
         quantidadeRolos: data.quantidadeRolos ?? null,
         quantidadeFolhas: data.quantidadeFolhas ?? null,
-        quantidadeEncaixados: data.quantidadeEncaixados ?? null,
+        quantidadeEncaixados: data.quantidadeEncaixados || null,
         quantidadePecas: data.quantidadePecas,
         quantidadeVolumes: data.quantidadeVolumes ?? null,
         cortadorResponsavel: data.cortadorResponsavel || null,
@@ -189,8 +189,7 @@ export class RomaneioService {
     if (data.tipoTecido !== undefined) updateData.tipoTecido = data.tipoTecido || null;
     if (data.quantidadeRolos !== undefined) updateData.quantidadeRolos = data.quantidadeRolos ?? null;
     if (data.quantidadeFolhas !== undefined) updateData.quantidadeFolhas = data.quantidadeFolhas ?? null;
-    if (data.quantidadeEncaixados !== undefined) updateData.quantidadeEncaixados = data.quantidadeEncaixados ?? null;
-    if (data.quantidadePecas !== undefined) updateData.quantidadePecas = data.quantidadePecas;
+    if (data.quantidadeEncaixados !== undefined) updateData.quantidadeEncaixados = data.quantidadeEncaixados || null;    if (data.quantidadePecas !== undefined) updateData.quantidadePecas = data.quantidadePecas;
     if (data.quantidadeVolumes !== undefined) updateData.quantidadeVolumes = data.quantidadeVolumes ?? null;
     if (data.cortadorResponsavel !== undefined) updateData.cortadorResponsavel = data.cortadorResponsavel || null;
     if (data.conferidoPor !== undefined) updateData.conferidoPor = data.conferidoPor || null;

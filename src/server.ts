@@ -2,6 +2,8 @@ import Fastify from 'fastify';
 import type { FastifyError } from 'fastify';
 import cors from '@fastify/cors';
 import jwt from '@fastify/jwt';
+import helmet from '@fastify/helmet';
+import rateLimit from '@fastify/rate-limit';
 import swagger from '@fastify/swagger';
 import swaggerUi from '@fastify/swagger-ui';
 import { env } from './config/env';
@@ -43,6 +45,18 @@ await app.register(cors, {
       expiresIn: env.JWT_EXPIRES_IN,
     },
   });
+  await app.register(helmet, {
+  contentSecurityPolicy: false, // desabilita CSP (não é necessário para APIs)
+  crossOriginResourcePolicy: { policy: 'cross-origin' }, // permite CORS
+});
+  await app.register(rateLimit,{
+    global: false,
+    max: 100,
+    timeWindow: '1 minute',
+    errorResponseBuilder: ()=>({
+      error:'Muitas requisições. Tente novamente em breve',
+    }),
+  });
 
   // Aceitar body vazio em DELETE (evita 400 em requisições sem body)
 app.addContentTypeParser(
@@ -62,6 +76,8 @@ app.addContentTypeParser(
 );
 
   // ===== SWAGGER =====
+// ===== SWAGGER (só se habilitado) =====
+if (env.ENABLE_SWAGGER) {
   await app.register(swagger, {
     openapi: {
       info: {
@@ -94,7 +110,7 @@ app.addContentTypeParser(
       deepLinking: true,
     },
   });
-
+}
   // ===== ROTAS =====
   await app.register(authRoutes, { prefix: '/api/auth' });
   await app.register(quoteRoutes, { prefix: '/api/admin/quotes' });
@@ -133,7 +149,9 @@ app.setErrorHandler((error: FastifyError, request, reply) => {
 
     await app.listen({ port: env.PORT, host: env.HOST });
     app.log.info(`🚀 Admin API rodando em http://localhost:${env.PORT}`);
-    app.log.info(`📚 Documentação: http://localhost:${env.PORT}/docs`);
+    if (env.ENABLE_SWAGGER) {
+      app.log.info(`📚 Documentação: http://localhost:${env.PORT}/docs`);
+    }
   } catch (err) {
     app.log.error(err);
     process.exit(1);
