@@ -2,7 +2,6 @@ import Fastify from 'fastify';
 import type { FastifyError } from 'fastify';
 import cors from '@fastify/cors';
 import jwt from '@fastify/jwt';
-import helmet from '@fastify/helmet';
 import rateLimit from '@fastify/rate-limit';
 import swagger from '@fastify/swagger';
 import swaggerUi from '@fastify/swagger-ui';
@@ -45,10 +44,7 @@ await app.register(cors, {
       expiresIn: env.JWT_EXPIRES_IN,
     },
   });
-  await app.register(helmet, {
-  contentSecurityPolicy: false, // desabilita CSP (não é necessário para APIs)
-  crossOriginResourcePolicy: { policy: 'cross-origin' }, // permite CORS
-});
+
   await app.register(rateLimit,{
     global: false,
     max: 100,
