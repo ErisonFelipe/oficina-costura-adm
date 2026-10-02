@@ -168,7 +168,7 @@ export class RomaneioController {
       }
 
       // Gera o HTML
-      const html = renderRomaneioHTML(romaneio);
+      const html = await renderRomaneioHTML(romaneio);
 
       // Gera o PDF
       const pdf = await htmlToPDF(html);

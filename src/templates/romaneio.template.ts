@@ -1,4 +1,6 @@
 import type { Romaneio } from '@prisma/client';
+import QRCode from 'qrcode';
+import { PIX_CONFIG, gerarQRCodePix } from '../utils/pix';
 
 /**
  * Formata número no padrão brasileiro (1.336,00)
@@ -54,9 +56,12 @@ interface Cobranca {
  * Gera o HTML do romaneio com base nos dados do banco.
  * Esse HTML será transformado em PDF pelo Puppeteer.
  */
-export function renderRomaneioHTML(romaneio: Romaneio): string {
+export async function renderRomaneioHTML(romaneio: Romaneio): Promise <string> {
   const grade = romaneio.grade as unknown as GradeItem[];
   const cobranca = romaneio.cobranca as unknown as Cobranca;
+
+   // Gera o QR Code do PIX
+  const qrCodeSvg = await gerarQRCodePix(80);
 
   const linhasGrade = grade
     .map(
@@ -80,28 +85,28 @@ export function renderRomaneioHTML(romaneio: Romaneio): string {
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    body {
+      body {
       font-family: 'Helvetica', 'Arial', sans-serif;
       color: #2C2825;
       background: #fff;
-      padding: 40px;
-      font-size: 12px;
-      line-height: 1.5;
+      padding: 24px 32px;
+      font-size: 11px;
+      line-height: 1.4;
     }
 
     /* ===== CABEÇALHO ===== */
     .header {
       text-align: center;
-      border-bottom: 3px solid #C67B5C;
-      padding-bottom: 16px;
-      margin-bottom: 24px;
+      border-bottom: 2px solid #C67B5C;
+      padding-bottom: 10px;
+      margin-bottom: 14px;
     }
 
     .header h1 {
-      font-size: 32px;
+      font-size: 26px;
       font-weight: 700;
       color: #C67B5C;
-      letter-spacing: 3px;
+      letter-spacing: 2px;
       text-transform: uppercase;
     }
 
@@ -111,6 +116,69 @@ export function renderRomaneioHTML(romaneio: Romaneio): string {
       letter-spacing: 2px;
       margin-top: 4px;
       text-transform: uppercase;
+    }
+
+        .dados-empresa {
+      font-size: 10px;
+      color: #6B6560;
+      margin-top: 8px;
+      letter-spacing: 0.5px;
+      font-weight: 500;
+    }
+
+    /* ===== QR CODE PIX ===== */
+    .qr-container {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: #FDF8F5;
+      border: 1px solid #E8D5CB;
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 16px;
+    }
+
+    .qr-code {
+      flex-shrink: 0;
+      width: 110px;
+      height: 110px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #FFF;
+      border-radius: 8px;
+      padding: 4px;
+    }
+
+    .qr-code svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .qr-info {
+      flex: 1;
+    }
+
+    .qr-info .titulo {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #C67B5C;
+      margin-bottom: 4px;
+    }
+
+    .qr-info .chave {
+      font-size: 14px;
+      font-weight: 600;
+      color: #2C2825;
+      margin-bottom: 4px;
+    }
+
+    .qr-info .instrucao {
+      font-size: 10px;
+      color: #6B6560;
+      line-height: 1.4;
     }
 
     /* ===== NÚMERO DO ROMANEIO ===== */
@@ -124,7 +192,7 @@ export function renderRomaneioHTML(romaneio: Romaneio): string {
 
     /* ===== SEÇÕES ===== */
     .section {
-      margin-bottom: 20px;
+      margin-bottom: 12px;
     }
 
     .section-title {
@@ -261,8 +329,11 @@ export function renderRomaneioHTML(romaneio: Romaneio): string {
 
   <!-- CABEÇALHO -->
   <div class="header">
-    <h1>Lunnexx</h1>
+    <h1>Lunexx</h1>
     <div class="subtitulo">Romaneio de Corte</div>
+    <div class="dados-empresa">
+      CNPJ: ${PIX_CONFIG.cnpj} &nbsp;|&nbsp; PIX: ${PIX_CONFIG.chaveFormatada}
+    </div>
   </div>
 
   <!-- NÚMERO -->
@@ -366,9 +437,21 @@ export function renderRomaneioHTML(romaneio: Romaneio): string {
         </tr>
       </tbody>
     </table>
-    ${cobranca.observacao ? `
-      <div class="observacoes">${cobranca.observacao}</div>
-    ` : ''}
+        <!-- QR CODE PIX -->
+    <div class="qr-container">
+      <div class="qr-code">
+        ${qrCodeSvg}
+      </div>
+      <div class="qr-info">
+        <div class="titulo">Pague com PIX</div>
+        <div class="chave">${PIX_CONFIG.chaveFormatada}</div>
+        <div class="instrucao">
+          Aponte a câmera do seu celular para o QR Code acima<br>
+          ou copie a chave PIX e cole no seu banco.
+        </div>
+      </div>
+    </div>
+    
   </div>
 
   <!-- CONFERÊNCIA -->
