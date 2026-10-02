@@ -12,6 +12,7 @@ import { quoteRoutes } from './routes/quote.routes';
 import { userRoutes } from './routes/user.routes';
 import { romaneioRoutes } from './routes/romaneio.routes';
 import { clientRoutes } from './routes/client.routes';
+import { closeBrowser } from './utils/pdfGenerator';
 
 async function bootstrap() {
   const app = Fastify({
@@ -158,6 +159,7 @@ app.setErrorHandler((error: FastifyError, request, reply) => {
     app.log.info(`\n${signal} recebido. Encerrando...`);
     await app.close();
     await prisma.$disconnect();
+    await closeBrowser();
     process.exit(0);
   };
 
