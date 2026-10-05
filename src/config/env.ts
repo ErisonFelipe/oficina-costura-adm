@@ -8,7 +8,11 @@ const envSchema = z.object({
   DATABASE_URL: z.string().url(),
   ADMIN_URL: z.string().url().default('http://localhost:5174'),
   JWT_SECRET: z.string().min(32, 'JWT_SECRET precisa ter pelo menos 32 caracteres'),
-  JWT_EXPIRES_IN: z.string().default('7d'),
+  JWT_EXPIRES_IN: z.string().default('15m'),
+  JWT_REFRESH_EXPIRES_IN: z.string().default('30d'),
+  COOKIE_SECRET: z.string().min(32, 'COOKIE_SECRET precisa ter pelo menos 32 caracteres'),
+  COOKIE_DOMAIN: z.string().default('localhost'),
+  COOKIE_SECURE: z.coerce.boolean().default(false),
   ENABLE_SWAGGER: z.coerce.boolean().default(false),
 });
 

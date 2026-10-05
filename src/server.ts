@@ -5,6 +5,7 @@ import jwt from '@fastify/jwt';
 import rateLimit from '@fastify/rate-limit';
 import swagger from '@fastify/swagger';
 import swaggerUi from '@fastify/swagger-ui';
+import cookie from '@fastify/cookie';
 import { env } from './config/env';
 import { prisma } from './config/database';
 import { authRoutes } from './routes/auth.routes';
@@ -39,7 +40,12 @@ await app.register(cors, {
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 });
-  await app.register(jwt, {
+// ===== COOKIES =====
+await app.register(cookie, {
+  secret: env.COOKIE_SECRET,
+  hook: 'onRequest',
+});
+await app.register(jwt, {
     secret: env.JWT_SECRET,
     sign: {
       expiresIn: env.JWT_EXPIRES_IN,
